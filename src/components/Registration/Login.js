@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { fetchToDBLogin } from '../../utils/api/fetchToDB';
+import { useHistory } from 'react-router-dom';
 
 function Copyright() {
   return (
@@ -45,10 +46,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Login = () => {
+  let history = useHistory();
   const [credentials, setCredentials] = useState({
     username: '',
     password: '',
   });
+
+  
 
   const handleChangeLogin = useCallback((event) => {
     setCredentials({
@@ -66,25 +70,27 @@ const Login = () => {
 
   const fetchToMongo = useCallback(async () => {
     const {username, password} = credentials
-    try{
-      await fetchToDBLogin(username, password)
-      console.log('SUCCESS REQUEST')
-    }catch (err) {
-      console.error('request error!', err)
+    try {
+     const response = await fetchToDBLogin(username, password)
+      console.log(response)
+      history.push("/survey");
+    }
+    catch (e) {
+      console.error('request error!', e);
     }
   }, [credentials])
 
+  
+
   const sendCred = useCallback((event) => {
+    event.preventDefault()
     fetchToMongo()
-    event.preventDefault();
-    
     setCredentials({
       ...credentials,
       username: '',
       password: '',
     });
   }, [credentials]);
-
   const classes = useStyles();
 
   return (
@@ -128,16 +134,16 @@ const Login = () => {
               />
             </Grid>
           </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={sendCred}
-          >
-            Sign Up
-          </Button>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={sendCred}
+            >
+              Sign In
+            </Button>        
         </form>
       </div>
       <Box mt={5}>

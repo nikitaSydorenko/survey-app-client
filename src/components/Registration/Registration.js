@@ -11,6 +11,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { fetchToDbRegistration } from '../../utils/api/fetchToDB';
+import { useHistory } from 'react-router-dom';
+
 
 function Copyright() {
   return (
@@ -44,9 +46,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Registration = () => {
-  const classes = useStyles();
 
+
+const Registration = () => {
+  let history = useHistory();
+  const classes = useStyles();
   const [credentials, setCredentials] = useState({
     username: '',
     password: '',
@@ -65,14 +69,15 @@ const Registration = () => {
       password: event.target.value,
     });
   }, [credentials]);
-
+  
   const fetchToMongo = useCallback(async () => {
     const {username, password} = credentials
     try{
       await fetchToDbRegistration(username, password)
       console.log('SUCCESS REQUEST')
+      history.push("/survey");
     }catch (err) {
-      console.error('request error!', err)
+      console.error('request error!', err);
     }
   }, [credentials])
 

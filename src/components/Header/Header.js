@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useHistory} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -35,9 +35,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Header = () => {
+const Header = ({isApploading, user}) => {
   const classes = useStyles();
-
+  if(!user.roles){
+    return null
+  }
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -46,9 +48,15 @@ const Header = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h4" className={classes.title}>
-            <NavLink className={classes.link} to="/">Survey Application</NavLink>
+            <NavLink className={classes.link} to="/">Survey Application</NavLink>  
           </Typography>
-          <NavLink to="/login"><Button className={classes.btn} color="inherit">Login</Button></NavLink>
+          <Typography variant="h6">
+         { user.roles.includes('ADMIN') && <NavLink to="/creator"><Button className={classes.btn} color="inherit">Creator</Button></NavLink> }
+          </Typography>
+          <Typography variant="h6">
+         <NavLink to="/get-answers"><Button className={classes.btn} color="inherit">Answers</Button></NavLink>
+          </Typography>
+          <NavLink to="/login"><Button className={classes.btn} color="inherit">{ isApploading ? 'LogIn' : 'LogOut' }</Button></NavLink>
           <NavLink to="/registration"><Button className={classes.btn} color="inherit">Register</Button></NavLink>
         </Toolbar>
       </AppBar>
